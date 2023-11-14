@@ -4,11 +4,12 @@ using UnityEngine.Events;
 public class PlayerController : MonoBehaviour
 {
     private const float Speed = 5;
-    public  float visionMax = 100;
-    public float currentVision = 0;
+    public const float VisionMax = 10;
+    public float currentVision;
     private const float RotationSpeed = 80;
     private Camera _mainCamera;
     private bool _losingVision = true;
+    private bool carryingMushroom = false;
 
     private float _yaw;
     private float _pitch;
@@ -17,10 +18,16 @@ public class PlayerController : MonoBehaviour
     public UnityEvent playerBlind;
     public UnityEvent pLayerHasVision;
     public UnityEvent interactedWithTv;
+    private int layerMask ;
+    private GameObject mushroom;
+    public GameObject mushroomsParent;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        layerMask = ~(1 << LayerMask.NameToLayer("Orbs"));
+        currentVision = VisionMax;
         _mainCamera = Camera.main;
         if (_mainCamera != null) _pitch = _mainCamera.transform.eulerAngles.y;
     }
@@ -28,12 +35,17 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckInteract();
+        if(carryingMushroom && Input.GetKeyDown(KeyCode.E)){
+            mushroom.transform.SetParent(mushroomsParent.transform);
+            mushroom.transform.SetPositionAndRotation(new Vector3(_mainCamera.transform.position.x + _mainCamera.transform.forward.x * 5, 0,_mainCamera.transform.position.z + _mainCamera.transform.forward.z * 5) , mushroomsParent.transform.rotation);
+            carryingMushroom = false;
+        }
+        else if(!carryingMushroom)CheckInteract();
         if (_losingVision)
         {
             if (currentVision > 0)
             {
-                currentVision-=Time.deltaTime;
+                currentVision-=Time.deltaTime/100;
             }
             else playerBlind.Invoke();
                 
@@ -42,9 +54,9 @@ public class PlayerController : MonoBehaviour
         if (!_losingVision)
         {
             pLayerHasVision.Invoke();
-            if (currentVision < visionMax)
+            if (currentVision <= VisionMax)
             {
-                currentVision+=Time.deltaTime/10f;
+                currentVision+=Time.deltaTime/100;
 
             }
                 
@@ -70,22 +82,31 @@ public class PlayerController : MonoBehaviour
         transform1.eulerAngles = new Vector3(_pitch, previousAngle.y, previousAngle.z);
     }
     
+    
     void CheckInteract()
     {
         if (Input.GetKeyDown(KeyCode.E)) // Check if Enter key is pressed
         {
             RaycastHit hit;
-            Ray ray = _mainCamera.ScreenPointToRay(new Vector3(_mainCamera.pixelWidth / 2, _mainCamera.pixelHeight / 2, 0));
-            Debug.Log(Screen.width/2 + "," + Screen.height/2);
-            if (Physics.Raycast(ray, out hit))
+            Ray ray = _mainCamera.ScreenPointToRay(new Vector3(_mainCamera.pixelWidth / 2, _mainCamera.pixelHeight / 2, 3));
+            if (Physics.Raycast(ray, out hit,Mathf.Infinity, layerMask))
             {
-                Debug.Log("Object detected and Enter pressed!");
-                Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.green, 1f);
+                Debug.DrawRay(ray.origin, ray.direction * hit.distance, Color.green, 3f);
                 if (hit.collider.gameObject.CompareTag("TV")) // Check if the hit object is the one you're interested in
                 {
                     // Run your code here
                     interactedWithTv.Invoke();
                     Debug.Log("its a tv");
+                }
+                else if (hit.collider.gameObject.CompareTag("Mushroom")) // Check if the hit object is the one you're interested in
+                {
+                    mushroom = hit.collider.gameObject;
+                    mushroom.transform.SetParent(transform);
+                    Vector3 newPosition = _mainCamera.transform.position + _mainCamera.transform.forward * 5;
+                    mushroom.transform.SetPositionAndRotation(newPosition, Quaternion.identity);
+                    carryingMushroom = true;
+                    
+                    Debug.Log("its a mushroom");
                 }
             }
         }
@@ -94,8 +115,8 @@ public class PlayerController : MonoBehaviour
     public void EnteredLightEmitter()
     {
         _losingVision = false;
-        currentVision = visionMax;
-        adjustVision.Invoke(currentVision, visionMax);
+        currentVision = VisionMax;
+        adjustVision.Invoke(currentVision, VisionMax);
     }
     
     public void LeftLightEmitter()

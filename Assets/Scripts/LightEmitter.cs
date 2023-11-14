@@ -31,13 +31,11 @@ public class LightEmitter : MonoBehaviour
 
     public void PlaySound()
     {
-        Debug.Log("play sound");
         if (!_audioSource.isPlaying) _audioSource.Play();
     }
 
     public void StopSound()
     {
-        Debug.Log("stop sound");
         _audioSource.Stop();
     }
 

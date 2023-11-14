@@ -5,14 +5,15 @@ TagManager:
   serializedVersion: 2
   tags:
   - TV
+  - Mushroom
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Interactables
   - Water
   - UI
-  - 
+  - Orbs
   - 
   - 
   - 

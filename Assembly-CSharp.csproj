@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\DarkenView.cs" />
-     <Compile Include="Assets\Scripts\Init.cs" />
      <Compile Include="Assets\Scripts\TvController.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\LightEmitter.cs" />
@@ -59,9 +58,11 @@
      <Folder Include="Assets\Materials" />
      <Folder Include="Assets\Models\Models pack psx" />
      <Folder Include="Assets\Scenes" />
+     <Folder Include="Assets\Prefabs" />
      <Folder Include="Assets\Scripts" />
      <Folder Include="Assets\Textures" />
      <Folder Include="Assets\Models" />
+     <Folder Include="Assets\Models\Materials" />
      <Reference Include="UnityEngine">
      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.8f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
