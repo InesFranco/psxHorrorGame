@@ -3,8 +3,9 @@ using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
+    public float sanity = 100;
     private const float Speed = 5;
-    public const float VisionMax = 10;
+    public const float VisionMax = 5;
     public float currentVision;
     private const float RotationSpeed = 80;
     private Camera _mainCamera;
@@ -45,7 +46,7 @@ public class PlayerController : MonoBehaviour
         {
             if (currentVision > 0)
             {
-                currentVision-=Time.deltaTime/100;
+                currentVision-=Time.deltaTime/10;
             }
             else playerBlind.Invoke();
                 
@@ -56,7 +57,7 @@ public class PlayerController : MonoBehaviour
             pLayerHasVision.Invoke();
             if (currentVision <= VisionMax)
             {
-                currentVision+=Time.deltaTime/100;
+                currentVision+=Time.deltaTime/10;
 
             }
                 

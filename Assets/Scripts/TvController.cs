@@ -7,15 +7,16 @@ public class TvController : MonoBehaviour
     private MeshRenderer _screenMeshRenderer;
     private Light _screenLight;
     private AudioSource _audioSource;
-
-    private bool isOn = true;
+    public bool isOn {get; private set;}
     
     // Start is called before the first frame update
     void Start()
     {
+        isOn = true;
         _screenMeshRenderer = tvScreen.GetComponent<MeshRenderer>();
         _screenLight = tvScreen.GetComponent<Light>();
         _audioSource = tvScreen.GetComponent<AudioSource>();
+        InvokeRepeating("TurnOff", 10f, 30f);
     }
 
     public void TurnOnOff()
